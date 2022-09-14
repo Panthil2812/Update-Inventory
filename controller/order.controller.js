@@ -1,16 +1,13 @@
 const createError = require("http-errors");
 const jwt = require("jsonwebtoken");
 
-const { Shopify, LATEST_API_VERSION } = require("@shopify/shopify-api");
 module.exports = {
   //GET ALL USER INFORMATION
   getAllUser: async (req, res) => {
     try {
-      console.log(" getAllUser : calling .....", req.body);
+      console.log(" getAllUser : calling .....");
       let products = [];
-      // const session = await Shopify.Utils.loadCurrentSession(req, res, false);
-      // console.log("session : " + session);
-      if (req.body.line_items.length > 0) {
+      if (req.body.line_items && req.body.line_items.length > 0) {
         req.body.line_items.map((data, index) => {
           console.log(
             `index: ${index} \n ,
