@@ -27,12 +27,14 @@ const QuerySku = async (sku) => {
     }
   }`;
 };
-const configData = async (data) => {
+const graphql_URL = `https://${process.env.SHOP}/admin/api/2022-07/graphql.json`;
+const inventory_levels_URL = `https://${process.env.SHOP}/admin/api/2022-07/inventory_levels/adjust.json`;
+const configData = async (url, data, status) => {
   return {
     method: "post",
-    url: `https://${process.env.SHOP}/admin/api/2022-07/graphql.json`,
+    url: url,
     headers: {
-      "Content-Type": "application/graphql",
+      "Content-Type": status ? "application/graphql" : "application/json",
       "X-Shopify-Access-Token": `${process.env.SHOPIFY_API_TOKEN}`,
     },
     data: data,
@@ -67,7 +69,11 @@ const getOrderJson = async (dataobj) => {
         // );
         const string = await added(data.sku);
         if (string) {
-          const config = await configData(await QuerySku(string));
+          const config = await configData(
+            graphql_URL,
+            await QuerySku(string),
+            1
+          );
           // console.log("config: ", config);
           const response = await axios(config);
           if (response.data) {
@@ -122,6 +128,30 @@ const getOrderJson = async (dataobj) => {
     return Promise.reject(error);
   }
 };
+const Update_Inventory_Levels = async (dataobj) => {
+  try {
+    if (dataobj.length > 0) {
+      if (dataobj && dataobj.length > 0) {
+        for (const data of dataobj) {
+          const config = await configData(
+            inventory_levels_URL,
+            {
+              location_id: data.location_id,
+              inventory_item_id: data.inventory_item_id,
+              available_adjustment: -data.quantity,
+            },
+            0
+          );
+          const response = await axios(config);
+          console.log("response", response.data);
+        }
+      }
+    }
+    return Promise.resolve(true);
+  } catch (error) {
+    return Promise.reject(false);
+  }
+};
 module.exports = {
   //GET ALL USER INFORMATION
   getAllUser: async (req, res) => {
@@ -130,8 +160,9 @@ module.exports = {
 
       const Json = await getOrderJson(req.body.line_items);
       console.log("getAllUser : ", Json);
+      const update = await Update_Inventory_Levels(Json);
 
-      if (Json) {
+      if (update) {
         res.send({
           status: res.statusCode,
           message: "successfully all user information",
