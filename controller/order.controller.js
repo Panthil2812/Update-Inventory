@@ -1,5 +1,3 @@
-const createError = require("http-errors");
-const jwt = require("jsonwebtoken");
 var axios = require("axios");
 const QuerySku = async (sku) => {
   return `query MyProductVariants {
