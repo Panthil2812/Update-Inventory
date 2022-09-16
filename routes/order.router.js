@@ -4,6 +4,6 @@ const router = express.Router();
 const db = require("../controller/order.controller");
 app.use(express.json());
 
-router.post("/users/fetch_users", db.getAllUser);
+router.post("/webhook/createOrder", db.getAllUser);
 
 module.exports = router;

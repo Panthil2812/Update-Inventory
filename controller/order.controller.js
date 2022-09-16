@@ -74,7 +74,10 @@ const getOrderJson = async (dataobj) => {
           );
           // console.log("config: ", config);
           const response = await axios(config);
-          if (response.data) {
+          if (
+            response.data &&
+            response?.data?.data?.productVariants?.edges[0]
+          ) {
             console.log(response.data);
             const res_data = response?.data?.data?.productVariants?.edges[0]
               ? response?.data?.data?.productVariants?.edges[0].node
