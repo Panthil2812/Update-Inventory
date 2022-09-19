@@ -41,8 +41,8 @@ const configData = async (url, data, status) => {
 const added = async (str) => {
   if (str.startsWith("10")) {
     if (str.endsWith("B")) {
-      console.log(str.substring(0, 7));
-      return str.substring(0, 7);
+      console.log(str.substring(0, -1));
+      return str.substring(0, -1);
     } else {
       console.log(str + "B");
       return str + "B";
@@ -159,17 +159,23 @@ module.exports = {
     try {
       console.log(" getAllUser : calling .....");
 
-      const Json = await getOrderJson(req.body.line_items);
-      console.log("getAllUser : ", Json);
-      const update = await Update_Inventory_Levels(Json);
+      // const Json = await getOrderJson(req.body.line_items);
+      // console.log("getAllUser : ", Json);
+      // const update = await Update_Inventory_Levels(Json);
 
-      if (update) {
-        res.send({
-          status: res.statusCode,
-          message: "successfully all user information",
-          data: "products",
-        });
-      }
+      // if (update) {
+      //   res.send({
+      //     status: res.statusCode,
+      //     message: "successfully all user information",
+      //     data: "products",
+      //   });
+      // }
+      console.log(req.body);
+      res.send({
+        status: res.statusCode,
+        message: "successfully all user information",
+        data: "products",
+      });
       console.log("getAllUser : successfully ....");
     } catch (error) {
       res.send({
