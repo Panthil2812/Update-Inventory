@@ -137,6 +137,10 @@ module.exports = {
   inventory_update: async (req, res) => {
     try {
       console.log(" inventory_update : calling .....");
+      console.log("=================================");
+      console.log("ORDER ID : ", req.body.admin_graphql_api_id);
+      console.log("=================================");
+
       const Json = await getOrderJson(req.body.line_items);
       console.log("inventory_update : ", Json);
       let update;
@@ -166,6 +170,9 @@ module.exports = {
   order_cancelltion: async (req, res) => {
     try {
       console.log(" order_cancelltion : calling .....");
+      console.log("=================================");
+      console.log("ORDER ID : ", req.body.admin_graphql_api_id);
+      console.log("=================================");
       const Json = await getOrderJson(req.body.line_items);
       console.log("order_cancelltion : ", Json);
       let update;
