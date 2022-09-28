@@ -56,47 +56,51 @@ const getOrderJson = async (dataobj) => {
     let products = [];
     if (dataobj && dataobj.length > 0) {
       for (const data of dataobj) {
-        console.log(
-          "products SKU : ",
-          data.sku,
-          " after PRODUCTS SKU : ",
-          await added(data.sku),
-          "\nProducts Quantity",
-          data.quantity
-        );
-        const string = await added(data.sku);
-        if (string) {
-          const config = await configData(
-            graphql_URL,
-            await QuerySku(string),
-            1
-          );
-          const response = await axios(config);
+        if (data?.sku) {
           console.log(
-            "productVariants API result ",
-            string,
-            ": ",
-            JSON.stringify(response.data)
+            "products SKU : ",
+            data.sku,
+            " after PRODUCTS SKU : ",
+            await added(data.sku),
+            "\nProducts Quantity",
+            data.quantity
           );
-          if (
-            response.data &&
-            response?.data?.data?.productVariants?.edges[0]
-          ) {
-            const res_data = response?.data?.data?.productVariants?.edges[0]
-              ? response?.data?.data?.productVariants?.edges[0].node
-                  .inventoryItem?.inventoryLevels?.edges[0].node
-              : "";
-            products.push({
-              sku: string,
-              quantity: data.quantity,
-              inventory_item_id: res_data?.id.split("inventory_item_id=")[1],
-              location_id: res_data.location.id.split("Location/")[1],
-              available: res_data.available,
-            });
-            console.log("res_data : ", res_data);
-          } else {
-            console.log("Product variants not found this sku : ", string);
+          const string = await added(data.sku);
+          if (string) {
+            const config = await configData(
+              graphql_URL,
+              await QuerySku(string),
+              1
+            );
+            const response = await axios(config);
+            console.log(
+              "productVariants API result ",
+              string,
+              ": ",
+              JSON.stringify(response.data)
+            );
+            if (
+              response.data &&
+              response?.data?.data?.productVariants?.edges[0]
+            ) {
+              const res_data = response?.data?.data?.productVariants?.edges[0]
+                ? response?.data?.data?.productVariants?.edges[0].node
+                    .inventoryItem?.inventoryLevels?.edges[0].node
+                : "";
+              products.push({
+                sku: string,
+                quantity: data.quantity,
+                inventory_item_id: res_data?.id.split("inventory_item_id=")[1],
+                location_id: res_data.location.id.split("Location/")[1],
+                available: res_data.available,
+              });
+              console.log("res_data : ", res_data);
+            } else {
+              console.log("Product variants not found this sku : ", string);
+            }
           }
+        } else {
+          console.log("sku not found : ", data);
         }
       }
       return Promise.resolve(products);
