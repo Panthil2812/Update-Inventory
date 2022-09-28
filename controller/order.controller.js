@@ -57,15 +57,15 @@ const getOrderJson = async (dataobj) => {
     if (dataobj && dataobj.length > 0) {
       for (const data of dataobj) {
         if (data?.sku) {
+          const string = await added(data.sku);
           console.log(
             "products SKU : ",
             data.sku,
             " after PRODUCTS SKU : ",
-            await added(data.sku),
+            string,
             "\nProducts Quantity",
             data.quantity
           );
-          const string = await added(data.sku);
           if (string) {
             const config = await configData(
               graphql_URL,
